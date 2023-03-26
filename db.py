@@ -1,10 +1,18 @@
+import datetime
 from peewee import *
 
-conn = SqliteDatabase('catcodes.sqlite')
+db = SqliteDatabase('catcodes.sqlite')
 
-cursor = conn.cursor()
-cursor.execute("SELECT * FROM codes")
-results = cursor.fetchall()
-print(results)
+class Address(Model):
+    url  = TextField()
 
-conn.close()
+    class Meta:
+        database = db
+
+class Code(Model):
+    url = ForeignKeyField(Address, related_name='codes')
+    status = TextField()
+    requested_at = DateTimeField(default=datetime.datetime.now)
+
+    class Meta:
+        database = db
